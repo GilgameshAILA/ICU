@@ -1,0 +1,88 @@
+<html>
+    <head>
+        
+        <title>Vote for game</title>
+    </head>
+    <body>
+    <style>
+        table {
+            border: 1px dashed red;
+        }
+        td  {
+            border: 1px dashed blue;
+            padding: 5px;
+        }
+</style>
+        
+    <script language="javascript" type="text/javascript">
+        //I use a input tag to select file.
+        //I call the function openFile. It is triggered with onchange event.
+      var openFile = function(event) {
+        var input = event.target;
+        //FileReader method to get the content of the text file
+        var reader = new FileReader();
+        reader.onload = function(){
+            var text = reader.result;
+            var node = document.getElementById('output');
+            node.innerText = text;
+            //put the content into array, one line is one value
+            var arr = node.innerText.split("\n");
+            //here is the count method I wrote for myself, because I cannot clearly understand methods from Internet.
+            var listOfWords = [];
+            for(var i = 0; i < arr.length; i++) {
+                if(listOfWords.indexOf(arr[i]) === -1) {
+                    listOfWords.push(arr[i]);
+                }
+            }
+            var voteList = [];
+            for(var q = 0; q < listOfWords.length; q++) {
+                voteList.push(0);
+                for(w = 0; w < arr.length; w++){
+                    if(listOfWords[q] == arr[w]){
+                        voteList[q]++;
+                    }
+                }
+            }
+            node.innerText = " ";
+            for(e = 0; e < voteList.length; e++) {
+                alert(listOfWords[e] + " got " + voteList[e] + " votes.");
+            }
+            //I use unshift method to add the names of rows to the beginning of arrays
+            listOfWords.unshift("Names of games");
+            voteList.unshift("Votes");
+            //declare the variables I need.
+            var arra, body, tab, tr, td, tn, row, col;
+            //the arra is the array contains the arrays that I need to put in the table.
+            arra = [
+                listOfWords,
+                voteList
+            ];
+            body = document.getElementsByTagName('body')[0];
+            tab = document.createElement('table');
+            //two for loops to create the proper number of rows and columns
+            for (row = 0; row < arra.length; row++){
+                tr = document.createElement('tr');
+                for (col = 0; col < arra[row].length; col++){
+                    td = document.createElement('td');
+                    tn = document.createTextNode(arra[row][col]);
+                    td.appendChild(tn);
+                    tr.appendChild(td);
+                }
+                tab.appendChild(tr);
+            }
+            //append the content to table
+            body.appendChild(tab);
+            console.log(reader.result);
+            };
+        reader.readAsText(input.files[0]);
+      };
+    </script>
+    <div id='table'>
+    <table id="myTable" cellpadding="2" cellspacing="2" border="1"></table>
+    </div>
+    <input type='file' accept='text/plain' onchange='openFile(event)'><br>
+    <div id='output'>
+    The table shows the votes the games have.
+    </div>
+    </body>
+    </html>
